@@ -1,0 +1,88 @@
+/*******************************************************************************
+* Shared styles
+*******************************************************************************/
+
+
+
+
+html {
+    overflow: auto;
+}
+
+body {
+    padding: 0px !important;
+    height: 100%;
+    color: #000 !important;
+    overflow: hidden;
+    background-color: #fff  !important;
+    font-size: 18px !important;
+    //font-family: sans-serif !important;
+
+}
+
+.content {
+    padding: 20px;
+}
+
+a {
+    color: $rgba-primary-0 !important;
+    text-decoration: underline !important;
+
+    &:hover {
+        color: $rgba-secondary-1-4 !important; 
+    }
+}
+
+
+
+
+.page-title {
+    color: $rgba-primary-4 !important;
+
+
+}
+
+.box-left:before,
+.box-right:before {
+    content: '';
+    display: block;
+    position: absolute;
+    width: 999em;
+    top: 0;
+    bottom: 0;
+}
+
+.box-left:before {
+    left: -999em;
+}
+
+.box-right:before {
+    right: -999em;
+}
+hr {
+    border-color: rgba(0, 0, 0, 0.2) !important;
+}
+
+h4 {
+
+}
+
+h5 {
+
+}
+.title-block {
+    .jumbotron {
+        
+        background: $rgba-primary-3 !important; 
+        h1 {
+            color: $rgba-secondary-2-1;
+        }
+        h3 {
+            color: #fff;
+            font-style: italic;
+        }
+        a {
+            color: $rgba-secondary-2-3 !important;
+        }
+    }
+}

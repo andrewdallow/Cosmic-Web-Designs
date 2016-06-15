@@ -1,0 +1,16 @@
+{
+  "name": "Cosmic_Web_Designs",
+  "version": "1.0.0",
+  "main": "path/to/main.css",
+  "ignore": [
+    ".jshintrc",
+    "**/*.txt"
+  ],
+  "dependencies": {
+    "bootstrap-sass": "3.3.6",
+    "angular": "~1.0.0",
+    "angular-bootstrap": "1.3.2",
+    "angular-sanitize": "1.5.5"
+  },
+  "devDependencies": {}
+}

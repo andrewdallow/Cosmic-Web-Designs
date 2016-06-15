@@ -1,0 +1,114 @@
+/*******************************************************************************
+*Icons
+*******************************************************************************/
+
+/*Devices Icon with stacked Desktop, Laptop, Tablet and mobile
+*******************************************************************************/
+.services {
+    .icon {
+        display: block;
+        width: 100%;    
+        height: 110px;
+        text-align: center;
+        font-size: 90px !important;
+        color: $rgba-secondary-1-0;
+    }
+}
+
+
+.devices {
+    padding-right: 60px;
+}
+
+.devicesIcons {
+    $monitorColour: #fff;
+    margin-top: 20px;
+    font-size: 70px !important;
+
+    .fa-desktop {
+        $scaleX: 1.3;
+        $scaleY: 1.3;
+
+        position:absolute;
+        top: 0;
+        left: 45%;
+        -ms-transform: scale($scaleX, $scaleY); /* IE 9 */
+        -webkit-transform: scale($scaleX, $scaleY); /* Safari */
+        transform: scale($scaleX, $scaleY);
+        color: #5A5A5A;
+    }
+
+    .fa-laptop {
+        $scaleX: 1.1;
+        $scaleY: 1.1;
+
+        position:absolute;
+        top: 8%;
+        left: 0%;
+        -ms-transform: scale($scaleX, $scaleY); /* IE 9 */
+        -webkit-transform: scale($scaleX, $scaleY); /* Safari */
+        transform: scale($scaleX, $scaleY);
+        color: #3FC044;
+    }
+
+    .laptopBack{
+        $scaleX: 1;
+        $scaleY: 0.65;
+
+        position:absolute;
+        top: 5.5%;
+        left: 5%;
+        -ms-transform: scale($scaleX, $scaleY); /* IE 9 */
+        -webkit-transform: scale($scaleX, $scaleY); /* Safari */
+        transform: scale($scaleX, $scaleY);
+        color: $monitorColour
+    }
+
+    .fa-tablet {
+        position:absolute;
+        top: 10%;
+        left: 95%;
+        color: #F09D29;
+    }
+
+    .tabletBack{
+        $scaleX: 0.70;
+        $scaleY: 0.75;
+
+        position:absolute;
+        top: 6%;
+        left: 90%;
+        -ms-transform: scale($scaleX, $scaleY); /* IE 9 */
+        -webkit-transform: scale($scaleX, $scaleY); /* Safari */
+        transform: scale($scaleX, $scaleY);
+        color: $monitorColour
+    }
+
+    .fa-mobile {
+        $scaleX: 0.5;
+        $scaleY: 0.5;
+
+        position:absolute;
+        top: 3.5%;
+        left: 116%;    
+        -ms-transform: scale($scaleX, $scaleY); /* IE 9 */
+        -webkit-transform: scale($scaleX, $scaleY); /* Safari */
+        transform: scale($scaleX, $scaleY);
+
+        color: #2864E6;
+    }
+
+    .mobileBack{
+        $scaleX: 0.22;
+        $scaleY: 0.38;
+
+        position:absolute;
+        top: 4.5%;
+        left: 105%;
+        -ms-transform: scale($scaleX, $scaleY); /* IE 9 */
+        -webkit-transform: scale($scaleX, $scaleY); /* Safari */
+        transform: scale($scaleX, $scaleY);
+        color: $monitorColour
+    }
+
+}
