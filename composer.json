@@ -29,5 +29,5 @@
 	"minimum-stability": "dev",
         "scripts": {
             "post-update-cmd": "GDM\\SSAutoGitIgnore\\UpdateScript::Go"
-       }
+       } 
 }
