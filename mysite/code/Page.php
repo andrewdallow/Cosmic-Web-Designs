@@ -36,7 +36,7 @@ class Page_Controller extends ContentController {
         
         /* CSS */     
         
-        Requirements::css($themeFolder . "/css/style.min.css");
+        Requirements::css($themeFolder . "/css/style.css");
         
         Requirements::css("https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css");
         Requirements::css("https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css");

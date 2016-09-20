@@ -12,3 +12,12 @@ SSViewer:
 SiteConfig:
   extensions:
     - SiteConfigExtension
+Blog:
+  extensions:
+    - WidgetPageExtension
+BlogPost:
+  extensions:
+    - WidgetPageExtension
+SiteTree:
+  extensions:
+    - CommentsExtension

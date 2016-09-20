@@ -4,7 +4,7 @@ global $project;
 $project = 'mysite';
 
 global $database;
-$database = '';
+$database = 'ss_cosmicwebdesigns';
 
 require_once('conf/ConfigureFromEnv.php');
 

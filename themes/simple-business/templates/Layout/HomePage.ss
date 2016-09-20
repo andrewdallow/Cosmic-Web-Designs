@@ -59,7 +59,7 @@
                                         <a href="$Link">
                                             <span class="btn btn-default">Read More</span>
                                         </a>
-                                        $Photo.setWidth(400)
+                                        $Photo.SetSize(400,300)
 
                                     </div>
                                 </div> 

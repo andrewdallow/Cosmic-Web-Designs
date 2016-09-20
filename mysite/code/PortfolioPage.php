@@ -17,7 +17,7 @@ class PortfolioPage extends Page {
     private static $db = array(
         'Date' => 'Date',
         'Website' => 'VarChar',
-        'Skills' => 'VarChar',
+        'Skills' => 'VarChar(255)',
         'Author' => 'VarChar',
         'Testimonial' => 'Text'
     );

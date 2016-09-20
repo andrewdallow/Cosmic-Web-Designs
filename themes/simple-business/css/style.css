@@ -230,7 +230,7 @@ hr {
   padding-top: 40px;
   padding-bottom: 30px; }
   #home-section .services .panel-body {
-    height: 450px; }
+    height: 480px; }
   #home-section .services h3 {
     font-size: 25px;
     text-align: center;
@@ -521,6 +521,90 @@ hr {
   font-weight: bold; }
 .project-form .row {
   font-size: 20px; }
+
+/* Blog Page
+*******************************************************************************/
+.blog-holder {
+  background: rgba(0, 0, 0, 0.05); }
+  .blog-holder .blog-entry .post-summary {
+    background: #fff;
+    margin-bottom: 30px;
+    padding: 10px 10px 20px 20px; }
+    .blog-holder .blog-entry .post-summary .blog-author {
+      color: gray;
+      font-style: italic;
+      font-size: 15px; }
+    .blog-holder .blog-entry .post-summary .read-more {
+      margin-top: 20px;
+      margin-right: 5px;
+      font-size: 15px;
+      text-align: right;
+      text-transform: uppercase; }
+  .blog-holder .blog-entry .post-image {
+    padding: 20px; }
+  .blog-holder .blog-entry .pagination {
+    float: right; }
+
+.blog-sidebar {
+  margin-top: 60px; }
+
+.WidgetHolder h3 {
+  text-transform: uppercase; }
+
+.categories {
+  padding-left: 0px !important; }
+  .categories .badge {
+    margin-left: 5px;
+    background: #fff;
+    color: #000; }
+  .categories li {
+    line-height: 40px; }
+    .categories li a {
+      text-decoration: none !important; }
+  .categories .text {
+    padding: 5px 10px 5px 10px;
+    background: rgba(0, 0, 0, 0.4);
+    color: #fff; }
+    .categories .text:hover {
+      background: #7bacbc; }
+
+.archive {
+  padding-left: 0px !important;
+  text-transform: uppercase; }
+  .archive li {
+    padding-bottom: 5px; }
+
+.blog-article-holder {
+  background: rgba(0, 0, 0, 0.05); }
+  .blog-article-holder .blog-entry {
+    padding-top: 20px; }
+  .blog-article-holder .blog-author {
+    color: gray;
+    font-style: italic;
+    font-size: 15px; }
+  .blog-article-holder article {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    background: #fff;
+    border: 1px solid #000; }
+  .blog-article-holder h1 {
+    padding-top: 20px;
+    padding-bottom: 10px;
+    text-align: center; }
+  .blog-article-holder .social-share, .blog-article-holder .blog-meta {
+    padding-top: 10px; }
+
+.member-profile {
+  margin-top: 20px;
+  padding: 20px;
+  border: 1px solid #000; }
+  .member-profile h1 {
+    margin-top: 0;
+    padding-top: 0;
+    padding-bottom: 10px; }
+  .member-profile .profile-summary {
+    padding: 20px;
+    font-style: italic; }
 
 /*******************************************************************************
 *Icons
