@@ -16,7 +16,7 @@
 @mixin icons-retina($sprite) {
 	background-image: sprite-url($sprite);
 	background-size: ceil(image-width(sprite-path($sprite)) / 2) auto;
-	
+
 	&.icon-assetadmin {
 		background-position: 0 round(nth(sprite-position($sprite, "picture"), 2) / 2);
 	}
@@ -85,7 +85,7 @@
 
 	.cms {	
 		.ss-ui-action-tabset {
-			&.action-menus.ss-tabset {				
+			&.action-menus.ss-tabset {
 				ul.ui-tabs-nav {
 					li {
 						a {
@@ -121,7 +121,7 @@
 					.toggle-children-icon {
 						@include retina-sprite($sprites32-2x, menu-arrow-deselected-down);
 					}
-					
+
 					&.opened {
 						.toggle-children-icon {
 							@include retina-sprite($sprites32-2x, menu-arrow-deselected-up);
@@ -136,7 +136,7 @@
 						.toggle-children-icon {
 							@include retina-sprite($sprites32-2x, menu-arrow-down);
 						}
-						
+
 						&.opened {
 							.toggle-children-icon {
 								@include retina-sprite($sprites32-2x, menu-arrow-up);
@@ -165,7 +165,7 @@
 				@include retina-sprite($sprites32-2x, dialog-close-over);
 			}
 		}
-		
+
 		.ui-icon-closethick {
 			@include retina-sprite($sprites32-2x, dialog-close);
 		}
@@ -191,7 +191,7 @@
 		&.icon-24 {
 			@include icons-retina($icon24-2x);
 		}
-		
+
 		&.icon-16 {
 			@include icons-retina($icon16-2x);
 		}

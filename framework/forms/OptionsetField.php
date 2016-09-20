@@ -62,6 +62,11 @@ class OptionsetField extends DropdownField {
 
 		if($source) {
 			foreach($source as $value => $title) {
+				// Ensure $title is safely cast
+				if ( !($title instanceof DBField) ) {
+					$title = DBField::create_field('Text', $title);
+				}
+
 				$itemID = $this->ID() . '_' . preg_replace('/[^a-zA-Z0-9]/', '', $value);
 				$odd = ($odd + 1) % 2;
 				$extraClass = $odd ? 'odd' : 'even';
@@ -83,9 +88,7 @@ class OptionsetField extends DropdownField {
 			'Options' => new ArrayList($options)
 		));
 
-		return $this->customise($properties)->renderWith(
-			$this->getTemplates()
-		);
+		return FormField::Field($properties);
 	}
 
 	/**
@@ -101,5 +104,14 @@ class OptionsetField extends DropdownField {
 
 	public function ExtraOptions() {
 		return new ArrayList();
+	}
+	
+	public function getAttributes() {
+		$attributes = parent::getAttributes();
+		unset($attributes['name']);
+		unset($attributes['required']);
+		unset($attributes['role']);
+		
+		return $attributes;
 	}
 }

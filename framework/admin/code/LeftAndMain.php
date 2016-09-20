@@ -79,7 +79,7 @@ class LeftAndMain extends Controller implements PermissionProvider {
 	 * @config
 	 * @var string
 	 */
-	private static $help_link = '//userhelp.silverstripe.org/framework/en/3.2';
+	private static $help_link = '//userhelp.silverstripe.org/framework/en/3.3';
 
 	/**
 	 * @var array
@@ -379,6 +379,8 @@ class LeftAndMain extends Controller implements PermissionProvider {
 			Requirements::javascript(THIRDPARTY_DIR . '/jquery-entwine/src/jquery.entwine.inspector.js');
 		}
 
+		HtmlEditorConfig::require_js();
+
 		Requirements::css(FRAMEWORK_ADMIN_DIR . '/thirdparty/jquery-notice/jquery.notice.css');
 		Requirements::css(THIRDPARTY_DIR . '/jquery-ui-themes/smoothness/jquery-ui.css');
 		Requirements::css(FRAMEWORK_ADMIN_DIR .'/thirdparty/chosen/chosen/chosen.css');
@@ -444,6 +446,9 @@ class LeftAndMain extends Controller implements PermissionProvider {
 		// The user's theme shouldn't affect the CMS, if, for example, they have
 		// replaced TableListField.ss or Form.ss.
 		Config::inst()->update('SSViewer', 'theme_enabled', false);
+
+		//set the reading mode for the admin to stage
+		Versioned::reading_stage('Stage');
 	}
 
 	public function handleRequest(SS_HTTPRequest $request, DataModel $model = null) {
@@ -1071,6 +1076,9 @@ class LeftAndMain extends Controller implements PermissionProvider {
 	 * @return SS_HTTPResponse JSON string with a
 	 */
 	public function savetreenode($request) {
+		if (!SecurityToken::inst()->checkRequest($request)) {
+			return $this->httpError(400);
+		}
 		if (!Permission::check('SITETREE_REORGANISE') && !Permission::check('ADMIN')) {
 			$this->getResponse()->setStatusCode(
 				403,
@@ -1298,7 +1306,9 @@ class LeftAndMain extends Controller implements PermissionProvider {
 				// The clientside (mainly LeftAndMain*.js) rely on ajax responses
 				// which can be evaluated as javascript, hence we need
 				// to override any global changes to the validation handler.
-				$form->setValidator($validator);
+				if($validator != NULL){
+					$form->setValidator($validator);
+				}
 			} else {
 				$form->unsetValidator();
 			}
@@ -1481,6 +1491,9 @@ class LeftAndMain extends Controller implements PermissionProvider {
 	public function currentPageID() {
 		if($this->getRequest()->requestVar('ID') && is_numeric($this->getRequest()->requestVar('ID')))	{
 			return $this->getRequest()->requestVar('ID');
+		} elseif ($this->getRequest()->requestVar('CMSMainCurrentPageID') && is_numeric($this->getRequest()->requestVar('CMSMainCurrentPageID'))) {
+			// see GridFieldDetailForm::ItemEditForm
+			return $this->getRequest()->requestVar('CMSMainCurrentPageID');
 		} elseif (isset($this->urlParams['ID']) && is_numeric($this->urlParams['ID'])) {
 			return $this->urlParams['ID'];
 		} elseif(Session::get($this->sessionNamespace() . ".currentPage")) {
@@ -1499,6 +1512,7 @@ class LeftAndMain extends Controller implements PermissionProvider {
 	 * @param int $id
 	 */
 	public function setCurrentPageID($id) {
+		$id = (int)$id;
 		Session::set($this->sessionNamespace() . ".currentPage", $id);
 	}
 

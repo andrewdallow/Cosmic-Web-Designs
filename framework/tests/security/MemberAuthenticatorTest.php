@@ -23,7 +23,7 @@ class MemberAuthenticatorTest extends SapphireTest {
 		Security::setDefaultAdmin($this->defaultUsername, $this->defaultPassword);
 		parent::tearDown();
 	}
-	
+
 	public function testLegacyPasswordHashMigrationUponLogin() {
 		$member = new Member();
 
@@ -163,5 +163,23 @@ class MemberAuthenticatorTest extends SapphireTest {
 		$this->assertEmpty($result);
 		$this->assertEquals('The provided details don&#039;t seem to be correct. Please try again.', $form->Message());
 		$this->assertEquals('bad', $form->MessageType());
+	}
+
+	public function testDefaultAdminLockOut()
+	{
+		Config::inst()->update('Member', 'lock_out_after_incorrect_logins', 1);
+		Config::inst()->update('Member', 'lock_out_delay_mins', 10);
+		SS_Datetime::set_mock_now('2016-04-18 00:00:00');
+		$controller = new Security();
+		$form = new Form($controller, 'Form', new FieldList(), new FieldList());
+
+		// Test correct login
+		MemberAuthenticator::authenticate(array(
+			'Email' => 'admin',
+			'Password' => 'wrongpassword'
+		), $form);
+
+		$this->assertTrue(Member::default_admin()->isLockedOut());
+		$this->assertEquals(Member::default_admin()->LockedOutUntil, '2016-04-18 00:10:00');
 	}
 }

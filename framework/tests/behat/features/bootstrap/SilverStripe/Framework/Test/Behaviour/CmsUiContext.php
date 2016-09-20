@@ -2,15 +2,12 @@
 
 namespace SilverStripe\Framework\Test\Behaviour;
 
-use Behat\Behat\Context\ClosuredContextInterface,
-	Behat\Behat\Context\TranslatedContextInterface,
-	Behat\Behat\Context\BehatContext,
+use Behat\Behat\Context\BehatContext,
 	Behat\Behat\Context\Step,
-	Behat\Behat\Exception\PendingException,
-	Behat\Mink\Exception\ElementNotFoundException,
-	Behat\Gherkin\Node\PyStringNode,
-	Behat\Gherkin\Node\TableNode,
-	Behat\Mink\Element\NodeElement;
+	Behat\Behat\Event\StepEvent,
+	Behat\Mink\Element\NodeElement,
+	Behat\Mink\Session,
+	WebDriver\Exception\UnexpectedAlertOpen;
 
 
 // PHPUnit
@@ -38,9 +35,33 @@ class CmsUiContext extends BehatContext {
 
 	/**
 	 * Get Mink session from MinkContext
+	 *
+	 * @return Session
 	 */
 	public function getSession($name = null) {
 		return $this->getMainContext()->getSession($name);
+	}
+
+	/**
+	 * Wait until CMS loading overlay isn't present.
+	 * This is an addition to the "ajax steps" logic in
+	 * SilverStripe\BehatExtension\Context\BasicContext
+	 * which also waits for any ajax requests to finish before continuing.
+	 *
+	 * The check also applies in when not in the CMS, which is a structural issue:
+	 * Every step could cause the CMS to be loaded, and we don't know if we're in the
+	 * CMS UI until we run a check.
+	 *
+	 * Excluding scenarios with @modal tag is required,
+	 * because modal dialogs stop any JS interaction
+	 *
+	 * @AfterStep ~@modal
+	 */
+	public function handleCmsLoadingAfterStep(StepEvent $event) {
+		$timeoutMs = $this->getMainContext()->getAjaxTimeout();
+		$this->getSession()->wait($timeoutMs,
+            "document.getElementsByClassName('cms-content-loading-overlay').length == 0"
+        );
 	}
 
 	/**

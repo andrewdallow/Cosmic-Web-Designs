@@ -468,6 +468,15 @@ class File extends DataObject {
 		return self::get_app_category($this->getExtension());
 	}
 
+	/**
+	 * Return image markup for use as a thumbnail in a strip
+	 *
+	 * @return HTMLVarchar
+	 */
+	public function StripThumbnail() {
+		return DBField::create_field('HTMLVarchar', '<img src="'.$this->Icon().'"/>');
+	}
+
 	public function CMSThumbnail() {
 		return '<img src="' . $this->Icon() . '" />';
 	}
@@ -481,15 +490,15 @@ class File extends DataObject {
 	 */
 	public function Icon() {
 		$ext = strtolower($this->getExtension());
-		if(!Director::fileExists(FRAMEWORK_DIR . "/images/app_icons/{$ext}_32.gif")) {
+		if(!Director::fileExists(FRAMEWORK_DIR . "/images/app_icons/{$ext}_32.png")) {
 			$ext = $this->appCategory();
 		}
 
-		if(!Director::fileExists(FRAMEWORK_DIR . "/images/app_icons/{$ext}_32.gif")) {
+		if(!Director::fileExists(FRAMEWORK_DIR . "/images/app_icons/{$ext}_32.png")) {
 			$ext = "generic";
 		}
 
-		return FRAMEWORK_DIR . "/images/app_icons/{$ext}_32.gif";
+		return FRAMEWORK_DIR . "/images/app_icons/{$ext}_32.png";
 	}
 
 	/**
@@ -743,7 +752,9 @@ class File extends DataObject {
 		if($this->ParentID) {
 			// Don't use the cache, the parent has just been changed
 			$p = DataObject::get_by_id('Folder', $this->ParentID, false);
-			if($p && $p->exists()) return $p->getRelativePath() . $this->getField("Name");
+			if($p && $p->isInDB()) {
+				return $p->getRelativePath() . $this->getField("Name");
+			}
 			else return ASSETS_DIR . "/" . $this->getField("Name");
 		} else if($this->getField("Name")) {
 			return ASSETS_DIR . "/" . $this->getField("Name");

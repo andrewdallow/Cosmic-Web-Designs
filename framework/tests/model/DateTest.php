@@ -59,6 +59,10 @@ class DateTest extends SapphireTest {
 		$this->assertEquals('04/03/2003', DBField::create_field('Date', '04-03-2003')->Nice(),
 			"Date->Nice() works with DD/MM/YYYY format"
 		);
+
+		$date = DBField::create_field('Date', '2003-03-04');
+		Config::inst()->update('Date', 'nice_format', 'd F Y');
+		$this->assertEquals('04 March 2003', $date->Nice());
 	}
 
 	public function testNiceUS(){
@@ -164,7 +168,7 @@ class DateTest extends SapphireTest {
 		SS_Datetime::set_mock_now('2000-12-31 12:00:00');
 
 		$this->assertEquals(
-			'1 month ago', 
+			'1 month ago',
 			DBField::create_field('Date', '2000-11-26')->Ago(true, 1),
 			'Past match on days, less than two months, lowest significance'
 		);
@@ -176,7 +180,7 @@ class DateTest extends SapphireTest {
 		);
 
 		$this->assertEquals(
-			'2 months ago', 
+			'2 months ago',
 			DBField::create_field('Date', '2000-10-27')->Ago(),
 			'Past match on days, over two months'
 		);
@@ -188,7 +192,7 @@ class DateTest extends SapphireTest {
 		);
 
 		$this->assertEquals(
-			'10 years ago', 
+			'10 years ago',
 			DBField::create_field('Date', '1990-12-31')->Ago(),
 			'Exact past match on years'
 		);
@@ -200,13 +204,13 @@ class DateTest extends SapphireTest {
 		);
 
 		$this->assertEquals(
-			'1 year ago', 
+			'1 year ago',
 			DBField::create_field('Date', '1999-12-30')->Ago(true, 1),
 			'Approximate past match in singular, lowest significance'
 		);
 
 		$this->assertEquals(
-			'12 months ago', 
+			'12 months ago',
 			DBField::create_field('Date', '1999-12-30')->Ago(),
 			'Approximate past match in singular'
 		);
@@ -224,13 +228,13 @@ class DateTest extends SapphireTest {
 		);
 
 		$this->assertEquals(
-			'in 1 day', 
+			'in 1 day',
 			DBField::create_field('Date', '2001-01-01')->Ago(true, 1),
 			'Approximate past match on minutes'
 		);
 
 		$this->assertEquals(
-			'in 24 hours', 
+			'in 24 hours',
 			DBField::create_field('Date', '2001-01-01')->Ago(),
 			'Approximate past match on minutes'
 		);

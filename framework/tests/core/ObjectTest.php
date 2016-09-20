@@ -383,6 +383,19 @@ class ObjectTest extends SapphireTest {
 			$object->invokeWithExtensions('extendableMethod', 'test'),
 			array('ExtendTest(test)', 'ExtendTest2(modified)')
 		);
+
+		$object2 = new ObjectTest_Extending();
+		$first = 1;
+		$second = 2;
+		$third = 3;
+		$result = $object2->getResults($first, $second, $third);
+		$this->assertEquals(
+			array(array('before', 'extension', 'after')),
+			$result
+		);
+		$this->assertEquals(31, $first);
+		$this->assertEquals(32, $second);
+		$this->assertEquals(33, $third);
 	}
 
 	public function testParseClassSpec() {
@@ -427,7 +440,7 @@ class ObjectTest extends SapphireTest {
 		// 5.4 Shorthand Array
 		$this->assertEquals(
 			array('Enum',array(array('Accepted', 'Pending', 'Declined', 'Unsubmitted'), 'Unsubmitted')),
-			Object::parse_class_spec("Enum(['Accepted', 'Pending', 'Declined', 'Unsubmitted'), 'Unsubmitted']")
+			Object::parse_class_spec("Enum(['Accepted', 'Pending', 'Declined', 'Unsubmitted'], 'Unsubmitted')")
 		);
 		// 5.4 Nested shorthand array
 		$this->assertEquals(
@@ -436,6 +449,28 @@ class ObjectTest extends SapphireTest {
 			Object::parse_class_spec(
 				"Enum(['Accepted', 'Pending', 'Declined', ['UnsubmittedA','UnsubmittedB']], 'Unsubmitted')")
 		);
+
+		// Associative array
+		$this->assertEquals(
+			array('Varchar', array(255, array('nullifyEmpty' => false))),
+			Object::parse_class_spec("Varchar(255, array('nullifyEmpty' => false))")
+		);
+		// Nested associative array
+		$this->assertEquals(
+			array('Test', array('string', array('nested' => array('foo' => 'bar')))),
+			Object::parse_class_spec("Test('string', array('nested' => array('foo' => 'bar')))")
+		);
+		// 5.4 shorthand associative array
+		$this->assertEquals(
+			array('Varchar', array(255, array('nullifyEmpty' => false))),
+			Object::parse_class_spec("Varchar(255, ['nullifyEmpty' => false])")
+		);
+		// 5.4 shorthand nested associative array
+		$this->assertEquals(
+			array('Test', array('string', array('nested' => array('foo' => 'bar')))),
+			Object::parse_class_spec("Test('string', ['nested' => ['foo' => 'bar']])")
+		);
+
 		// Namespaced class
 		$this->assertEquals(
 			array('Test\MyClass', array()),
@@ -598,6 +633,54 @@ class ObjectTest_ExtendTest3 extends Extension {
 
 class ObjectTest_ExtendTest4 extends ObjectTest_ExtendTest3 {
 	public function extendableMethod($argument = null) { return "ExtendTest4($argument)"; }
+}
+
+class ObjectTest_Extending extends Object implements TestOnly {
+
+	private static $extensions = array(
+		'ObjectTest_Extending_Extension'
+	);
+
+	public function getResults(&$first, &$second, &$third) {
+		// Before extending should be invoked second
+		$this->beforeExtending('updateResult', function(&$first, &$second, &$third) {
+			if($first === 1 && $second === 2 && $third === 3) {
+				$first = 11;
+				$second = 12;
+				$third = 13;
+				return 'before';
+			}
+			return 'before-error';
+		});
+
+		// After extending should be invoked fourth
+		$this->afterExtending('updateResult', function(&$first, &$second, &$third) {
+			if($first === 21 && $second === 22 && $third = 23) {
+				$first = 31;
+				$second = 32;
+				$third = 33;
+				return 'after';
+			}
+			return 'after-error';
+		});
+
+		// Function body invoked first
+		$result = $this->extend('updateResult', $first, $second, $third);
+		return array($result);
+	}
+}
+
+class ObjectTest_Extending_Extension extends Extension implements TestOnly {
+	public function updateResult(&$first, &$second, &$third) {
+		// Extension should be invoked third
+		if($first === 11 && $second === 12 && $third == 13) {
+			$first = 21;
+			$second = 22;
+			$third = 23;
+			return 'extension';
+		}
+		return 'extension-error';
+	}
 }
 
 /**#@-*/

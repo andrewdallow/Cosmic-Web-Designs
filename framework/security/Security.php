@@ -275,9 +275,12 @@ class Security extends Controller implements TemplateGlobalProvider {
 			$form = $me->LoginForm();
 			$form->sessionMessage($message, 'warning');
 			Session::set('MemberLoginForm.force_message',1);
-			$formText = $me->login();
+			$loginResponse = $me->login();
+			if($loginResponse instanceof SS_HTTPResponse) {
+				return $loginResponse;
+			}
 
-			$response->setBody($formText);
+			$response->setBody((string)$loginResponse);
 
 			$controller->extend('permissionDenied', $member);
 
@@ -324,10 +327,8 @@ class Security extends Controller implements TemplateGlobalProvider {
 			if(in_array($authenticator, $authenticators)) {
 				return $authenticator;
 			}
-		} else {
-			return Authenticator::get_default_authenticator();
 		}
-
+		return Authenticator::get_default_authenticator();
 	}
 
 	/**
@@ -502,7 +503,7 @@ class Security extends Controller implements TemplateGlobalProvider {
 	 * For multiple authenticators, Security_MultiAuthenticatorLogin is used.
 	 * See getTemplatesFor and getIncludeTemplate for how to override template logic
 	 *
-	 * @return string Returns the "login" page as HTML code.
+	 * @return string|SS_HTTPResponse Returns the "login" page as HTML code.
 	 */
 	public function login() {
 		// Check pre-login process

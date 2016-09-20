@@ -198,15 +198,37 @@ class VersionedTest extends SapphireTest {
 		$page1 = $this->objFromFixture('VersionedTest_DataObject', 'page1');
 		$page1->Content = 'orig';
 		$page1->write();
-		$oldVersion = $page1->Version;
+		$firstVersion = $page1->Version;
 		$page1->publish('Stage', 'Live', false);
-		$this->assertEquals($oldVersion, $page1->Version, 'publish() with $createNewVersion=FALSE');
+		$this->assertEquals(
+			$firstVersion,
+			$page1->Version,
+			'publish() with $createNewVersion=FALSE does not create a new version'
+		);
 
 		$page1->Content = 'changed';
 		$page1->write();
-		$oldVersion = $page1->Version;
+		$secondVersion = $page1->Version;
+		$this->assertTrue($firstVersion < $secondVersion, 'write creates new version');
+
 		$page1->publish('Stage', 'Live', true);
-		$this->assertTrue($oldVersion < $page1->Version, 'publish() with $createNewVersion=TRUE');
+		$thirdVersion = Versioned::get_latest_version('VersionedTest_DataObject', $page1->ID)->Version;
+		$liveVersion = Versioned::get_versionnumber_by_stage('VersionedTest_DataObject', 'Live', $page1->ID);
+		$stageVersion = Versioned::get_versionnumber_by_stage('VersionedTest_DataObject', 'Stage', $page1->ID);
+		$this->assertTrue(
+			$secondVersion < $thirdVersion,
+			'publish() with $createNewVersion=TRUE creates a new version'
+		);
+		$this->assertEquals(
+			$liveVersion,
+			$thirdVersion,
+			'publish() with $createNewVersion=TRUE publishes to live'
+		);
+		$this->assertEquals(
+			$stageVersion,
+			$secondVersion,
+			'publish() with $createNewVersion=TRUE does not affect stage'
+		);
 	}
 
 	public function testRollbackTo() {
@@ -222,10 +244,11 @@ class VersionedTest extends SapphireTest {
 		$changedVersion = $page1->Version;
 
 		$page1->doRollbackTo($origVersion);
-		$page1 = Versioned::get_one_by_stage('VersionedTest_DataObject', 'Stage',
-			sprintf('"VersionedTest_DataObject"."ID" = %d', $page1->ID));
+		$page1 = Versioned::get_one_by_stage('VersionedTest_DataObject', 'Stage', array(
+			'"VersionedTest_DataObject"."ID" = ?' => $page1->ID
+		));
 
-		$this->assertTrue($page1->Version > $changedVersion, 'Create a new higher version number');
+		$this->assertTrue($page1->Version == $changedVersion + 1, 'Create a new higher version number');
 		$this->assertEquals('orig', $page1->Content, 'Copies the content from the old version');
 
 		// check db entries
@@ -789,6 +812,7 @@ class VersionedTest extends SapphireTest {
 		$public1ID = $this->idFromFixture('VersionedTest_PublicStage', 'public1');
 		$public2ID = $this->idFromFixture('VersionedTest_PublicViaExtension', 'public2');
 		$privateID = $this->idFromFixture('VersionedTest_DataObject', 'page1');
+		$singleID = $this->idFromFixture('VersionedTest_SingleStage', 'single');
 
 		// Test that all (and only) public pages are viewable in stage mode
 		Session::clear("loggedInAs");
@@ -796,16 +820,21 @@ class VersionedTest extends SapphireTest {
 		$public1 = Versioned::get_one_by_stage('VersionedTest_PublicStage', 'Stage', array('"ID"' => $public1ID));
 		$public2 = Versioned::get_one_by_stage('VersionedTest_PublicViaExtension', 'Stage', array('"ID"' => $public2ID));
 		$private = Versioned::get_one_by_stage('VersionedTest_DataObject', 'Stage', array('"ID"' => $privateID));
+		// Also test an object that has just a single-stage (eg. is only versioned)
+		$single = Versioned::get_one_by_stage('VersionedTest_SingleStage', 'Stage', array('"ID"' => $singleID));
+
 
 		$this->assertTrue($public1->canView());
 		$this->assertTrue($public2->canView());
 		$this->assertFalse($private->canView());
+		$this->assertFalse($single->canView());
 
 		// Adjusting the current stage should not allow objects loaded in stage to be viewable
 		Versioned::reading_stage('Live');
 		$this->assertTrue($public1->canView());
 		$this->assertTrue($public2->canView());
 		$this->assertFalse($private->canView());
+		$this->assertFalse($single->canView());
 
 		// Writing the private page to live should be fine though
 		$private->publish("Stage", "Live");
@@ -831,6 +860,7 @@ class VersionedTest extends SapphireTest {
 		$this->assertTrue($public1->canView());
 		$this->assertTrue($public2->canView());
 		$this->assertTrue($private->canView());
+		$this->assertTrue($single->canView());
 	}
 
 

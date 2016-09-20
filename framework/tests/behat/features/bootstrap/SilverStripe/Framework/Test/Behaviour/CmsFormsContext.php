@@ -11,7 +11,7 @@ use Behat\Behat\Context\ClosuredContextInterface,
 	Behat\Gherkin\Node\PyStringNode,
 	Behat\Gherkin\Node\TableNode,
 	Behat\MinkExtension\Context\MinkContext as MinkContext;
-	
+
 use Symfony\Component\DomCrawler\Crawler;
 
 // PHPUnit
@@ -266,4 +266,19 @@ JS;
 		}
 	}
 
+	/**
+	 * @example Given the CMS settings has the following data
+	 *	| Title | My site title |
+	 *	| Theme | My site theme |
+	 * @Given /^the CMS settings have the following data$/
+	 */
+	public function theCmsSettingsHasData(TableNode $fieldsTable) {
+		$fields = $fieldsTable->getRowsHash();
+		$siteConfig = \SiteConfig::get()->first();
+		foreach($fields as $field => $value) {
+			$siteConfig->$field = $value;
+		}
+		$siteConfig->write();
+		$siteConfig->flushCache();
+	}
 }

@@ -25,6 +25,8 @@ class DataListTest extends SapphireTest {
 		'DataObjectTest\NamespacedClass',
 		'DataObjectTest_Company',
 		'DataObjectTest_Fan',
+		'ManyManyListTest_Product',
+		'ManyManyListTest_Category',
 	);
 
 	public function testFilterDataObjectByCreatedDate() {
@@ -200,7 +202,7 @@ class DataListTest extends SapphireTest {
 
 	public function testInnerJoinParameterised() {
 		$db = DB::get_conn();
-		
+
 		$list = DataObjectTest_TeamComment::get();
 		$list = $list->innerJoin(
 			'DataObjectTest_Team',
@@ -405,6 +407,16 @@ class DataListTest extends SapphireTest {
 		$query = DataObjectTest_SubTeam::get()->filter('ID', 4)->sql($parameters);
 		$this->assertContains('WHERE ("DataObjectTest_Team"."ID" = ?)', $query);
 		$this->assertNotContains('WHERE ("DataObjectTest_SubTeam"."ID" = ?)', $query);
+	}
+
+	public function testByIDs() {
+		$knownIDs = $this->allFixtureIDs('DataObjectTest_Player');
+		$removedID = array_pop($knownIDs);
+		$filteredPlayers = DataObjectTest_Player::get()->byIDs($knownIDs);
+		foreach ($filteredPlayers as $player) {
+			$this->assertContains($player->ID, $knownIDs);
+			$this->assertNotEquals($removedID, $player->ID);
+		}
 	}
 
 	/**
